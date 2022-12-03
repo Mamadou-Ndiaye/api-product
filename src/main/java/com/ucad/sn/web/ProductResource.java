@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class ProductResource {
 
 
     @GetMapping
+    @PreAuthorize("hasAnyAuthority('USER')")
     public ResponseEntity<List<Product>> getAllProducts() {
         List<Product> allProduct = productService.findAll();
         allProduct.stream().forEach(product -> {log.info("ProductController::getProducts response {}", product.getName());});
@@ -31,6 +33,7 @@ public class ProductResource {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('USER')")
     public ResponseEntity<Product> getProduct(@PathVariable final Long id) {
         return ResponseEntity.ok(productService.findById(id));
     }
@@ -42,6 +45,7 @@ public class ProductResource {
           }
      */
     @PostMapping
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     public ResponseEntity<Product> createProduct(@RequestBody final Product product) {
         log.info("ProductResource:createProduct request body {} ", product);
         return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
