@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mysql-standalone:
+    image: 'mysql:5.7'
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=produit
+    ports:
+      - "3306:3306"
+  springboot-docker-container:
+    image: api-product
+    restart: on-failure
+    ports:
+      - "8086:8086"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-standalone:3306/produit?autoReconnect=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: "root"
+      SPRING_DATASOURCE_PASSWORD: "root"
+    build:
+      context: ./
+    depends_on:
+      - mysql-standalone
